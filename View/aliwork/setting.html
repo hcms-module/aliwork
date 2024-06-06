@@ -1,0 +1,87 @@
+<div class="page-container" v-cloak>
+    <el-card>
+        <template #header>
+            <div class="breadcrumb">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item>宜搭配置</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+        </template>
+        <div>
+            <el-form :model="form" label-width="120px">
+                <el-form-item prop="appkey" :rules="[{ required: true, message: '请输入appKey', trigger: 'blur' }]"
+                              label="appKey">
+                    <el-input v-model="form.appkey" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item prop="appsecret" :rules="[{ required: true, message: '请输入appSecret', trigger: 'blur' }]"
+                              label="appSecret">
+                    <el-input v-model="form.appsecret" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item prop="app_type" :rules="[{ required: true, message: '请输入appType', trigger: 'blur' }]"
+                              label="appType">
+                    <el-input v-model="form.app_type" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item prop="system_token"
+                              :rules="[{ required: true, message: '请输入systemToken', trigger: 'blur' }]"
+                              label="systemToken">
+                    <el-input v-model="form.system_token" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item prop="user_id"
+                              :rules="[{ required: true, message: '请输入操作员用户id', trigger: 'blur' }]"
+                              label="操作员用户id">
+                    <el-input v-model="form.user_id" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="submitEvent" type="primary">
+                        提交
+                    </el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-card>
+</div>
+<script>
+    const App = {
+        data() {
+            return {
+                form: {}
+            }
+        },
+        mounted() {
+            this.getInfo()
+        },
+        methods: {
+            /**
+             * 获取编辑所需信息
+             */
+            getInfo() {
+                this.httpGet("{:url('aliwork/aliwork/setting/info')}", {
+                    ...this.getUrlQuery()
+                }).then(res => {
+                    if (res.status) {
+                        let {setting = {}} = res.data
+                        this.form = {
+                            ...this.form,
+                            ...setting
+                        }
+                    }
+                })
+            },
+            /**
+             * 提交信息
+             */
+            submitEvent() {
+                this.httpPost("{:url('aliwork/aliwork/setting')}", {
+                    setting: this.form,
+                }).then(res => {
+                    if (res.status) {
+                        this.$message.success(res.msg)
+                    }
+                })
+            },
+        }
+    }
+</script>
+
+<style>
+</style>
